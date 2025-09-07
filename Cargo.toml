@@ -25,10 +25,15 @@ memory_addr = "0.4"
 num_enum = { version = "0.7.3", default-features = false }
 zerocopy = { version = "0.8.20", default-features = false }
 
-sel4-kit = { workspace = true, features = ["alloc"] }
-srv-gate = { workspace = true }
-uart-thread = { workspace = true }
-common = { workspace = true, features = ["alloc"] }
-common-macros = { workspace = true }
-sel4 = { workspace = true }
-axconfig = { workspace = true }
+sel4-kit = { git = "https://github.com/reL4team2/rel4-linux-kit.git", rev = "2c55dac" }
+srv-gate = { git = "https://github.com/reL4team2/rel4-linux-kit.git", rev = "2c55dac" }
+uart-thread = { git = "https://github.com/reL4team2/rel4-linux-kit.git", rev = "2c55dac" }
+common = { git = "https://github.com/reL4team2/rel4-linux-kit.git", rev = "2c55dac" }
+common-macros = { git = "https://github.com/reL4team2/rel4-linux-kit.git", rev = "2c55dac" }
+sel4 = { git = "https://github.com/seL4/rust-sel4", rev = "5b9ebfd" }
+
+[patch.crates-io]
+axcpu = { git = "https://github.com/croakexciting/axcpu.git", rev = "d40cb74" }
+
+[patch."https://github.com/seL4/rust-sel4"]
+sel4 = { git = "https://github.com/yfblock/rust-sel4", rev = "1280281" }

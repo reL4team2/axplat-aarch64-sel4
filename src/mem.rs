@@ -1,8 +1,8 @@
 //! This module provides the implementation of the memory interface for the seL4 platform.
 //! It initializes the memory space, manages memory regions, and provides methods to map and allocate memory.
 use axplat::mem::{MemIf, PhysAddr, RawRange, VirtAddr};
-use common::ObjectAllocator;
 use common::root::translate_addr;
+use common::ObjectAllocator;
 
 use crate::config::devices::MMIO_RANGES;
 use crate::utils::obj::alloc_pt;
@@ -12,11 +12,11 @@ use kspin::SpinNoIrq;
 use lazyinit::LazyInit;
 use sel4::cap;
 
-const MEM_START_ADDR: usize = axconfig::plat::VIRT_MEMORY_BASE;
-const MEM_SIZE: usize = axconfig::plat::VIRT_MEMORY_SIZE;
+const MEM_START_ADDR: usize = crate::config::plat::VIRT_MEMORY_BASE;
+const MEM_SIZE: usize = crate::config::plat::VIRT_MEMORY_SIZE;
 
-const VIRT_FRAME_ADDR: usize = axconfig::plat::VIRT_FRAME_BASE;
-const VIRT_FRAME_SIZE: usize = axconfig::plat::VIRT_FRAME_SIZE;
+const VIRT_FRAME_ADDR: usize = crate::config::plat::VIRT_FRAME_BASE;
+const VIRT_FRAME_SIZE: usize = crate::config::plat::VIRT_FRAME_SIZE;
 
 const LARGE_PAGE_SIZE: usize = 0x200000; // 2MB
 const PAGE_SIZE: usize = 0x1000; // 4KB
@@ -47,10 +47,10 @@ impl MemSpace {
     pub(crate) fn init(&self) {
         self.mem_allocator.init(sel4::Cap::from_bits(24));
         // add pre allocator heap region
-        let paddr = translate_addr(axconfig::plat::INIT_HEAP_BASE);
+        let paddr = translate_addr(crate::config::plat::INIT_HEAP_BASE);
         self.regions.lock().insert(
-            axconfig::plat::INIT_HEAP_BASE,
-            (paddr, paddr + axconfig::plat::INIT_HEAP_SIZE),
+            crate::config::plat::INIT_HEAP_BASE,
+            (paddr, paddr + crate::config::plat::INIT_HEAP_SIZE),
         );
     }
 
@@ -207,12 +207,6 @@ impl VirtFrameAllocator {
 
 /// Initializes the memory space and sets up the global memory allocator.
 pub(crate) fn init() {
-    // TODO: use config to get the memory size
-    // pre allocator initialize
-    // axalloc::global_init(
-    //     axconfig::plat::INIT_HEAP_BASE,
-    //     axconfig::plat::INIT_HEAP_SIZE,
-    // );
     MEM_SPACE.init_once(MemSpace::new());
     MEM_SPACE.init();
     MEM_SPACE.map_area(MEM_START_ADDR, MEM_SIZE);
